@@ -39,6 +39,8 @@ public class sudokuGA {
 
         SudokuArray = fillPredeterminedNakedSingles(SudokuArray);
         SudokuArray = fillPredeterminedHiddenSingles(SudokuArray);
+        SudokuArray = fillPredeterminedHiddenSingles(SudokuArray);
+        SudokuArray = fillPredeterminedHiddenSingles(SudokuArray);
 
         System.out.println("Predetermined Filled SUDOKU");
         prettyPrint(SudokuArray);
@@ -50,44 +52,44 @@ public class sudokuGA {
         //false values mean they are available
 
         boolean improvement = false; 
-        boolean realImprovement = false; 
+        cellBools = pencilPossibles(sudokuArray); //calculate pencil
 
     do{
-        realImprovement = false;
-        cellBools = pencilPossibles(sudokuArray); //calculate pencil
+        improvement = false;
         for(int row = 0; row < 9; row++){
             for(int col = 0; col < 9; col++){
-                if(improvement)
-                    realImprovement = true;
                 if(sudokuArray[row][col] == '0'){
                     boolean tripwire = false;
                     for(int possibles = 0; possibles < 9; possibles++){
                         if(!cellBools[row][col][possibles]){
-                            if(tripwire){ //more than one possibility
-                                sudokuArray[row][col] = '0';
-                                improvement = false;
-                                break;
-                            } 
-                            tripwire = true;
-                            improvement = true;
-                            sudokuArray[row][col] = (char)(possibles+1 + '0');  
+                            for(int moreThanOne = 0; moreThanOne < 9 ; moreThanOne++)
+                                if(!cellBools[row][col][moreThanOne] && moreThanOne != possibles)
+                                    tripwire = true;
+                        
+                        
+                            if(!tripwire){
+                                sudokuArray[row][col] = (char)(possibles+1 + '0');  
+                                cellBools = pencilPossibles(sudokuArray); //calculate pencil
+                                improvement = true;
+                            }
                         }
                     } 
                 }    
             }   
         }
-    } while(realImprovement);
+    } while(improvement);
 
         return (sudokuArray);
     }
 
     private static char[][] fillPredeterminedHiddenSingles(char[][] sudokuArray){
+        char[][] sudokuArray1 = sudokuArray;
         boolean[][][] cellBools = new boolean[9][9][9];
-        cellBools = pencilPossibles(sudokuArray);
+        cellBools = pencilPossibles(sudokuArray1);
 
         for(int row = 0; row < 9; row++){
             for(int col = 0; col < 9; col++){ //iterate over every cell
-                if(sudokuArray[row][col] == '0'){ //work only on empty cells
+                if(sudokuArray1[row][col] == '0'){ //work only on empty cells
                     for(int cellPencilCounter = 0; cellPencilCounter < 9; cellPencilCounter++){ //check every item in [row][col][0..9]
                         boolean rowFound = false;
                         boolean colFound = false;
@@ -97,9 +99,9 @@ public class sudokuGA {
                             for(int innerCounter = 0; innerCounter < 9; innerCounter++){ //compare to everything in row+col
                                 if(colFound && rowFound)
                                     break;
-                                if(cellBools[row][innerCounter][cellPencilCounter] == false && sudokuArray[row][innerCounter] == '0' && innerCounter != col) //check cols
+                                if(cellBools[row][innerCounter][cellPencilCounter] == false && sudokuArray1[row][innerCounter] == '0' && innerCounter != col) //check cols
                                     colFound = true;
-                                if(cellBools[innerCounter][col][cellPencilCounter] == false && sudokuArray[innerCounter][col] == '0' && innerCounter != row) //check rows
+                                if(cellBools[innerCounter][col][cellPencilCounter] == false && sudokuArray1[innerCounter][col] == '0' && innerCounter != row) //check rows
                                     rowFound = true;
                             }
                             //check subgroup
@@ -107,11 +109,13 @@ public class sudokuGA {
                             int sgCol = col/3*3;
                             for (int localRow = sgRow; localRow < sgRow+3; localRow++)
                                 for(int localCol = sgCol; localCol < sgCol+3; localCol++)
-                                    if((cellBools[localRow][localCol][cellPencilCounter] == false) && ((row != localRow) && (col != localCol)) && (sudokuArray[localRow][localCol] == '0')) 
+                                    if((cellBools[localRow][localCol][cellPencilCounter] == false) && (localCol != col || localRow != row) && (sudokuArray1[localRow][localCol] == '0')) 
                                         sgFound = true;
                             
                             if(!rowFound || !colFound || !sgFound){ //write pencil as pen
-                                sudokuArray[row][col] = (char)(cellPencilCounter+1 + '0');
+                                sudokuArray1[row][col] = (char)(cellPencilCounter+1 + '0');
+                                cellBools = pencilPossibles(sudokuArray1);
+                                break;
                             }
 
                         }
@@ -121,7 +125,7 @@ public class sudokuGA {
             }
         }
         
-        return sudokuArray;
+        return sudokuArray1;
     }
 
     private static boolean[][][] pencilPossibles(char[][] sudokuArray){
