@@ -1,0 +1,9 @@
+populationSize 200
+tournamentSize 10
+mutationRate 0.7
+randomCount 10
+elitismCount 30
+maxIterations 40000
+verbose
+tofile
+useoptimizations
