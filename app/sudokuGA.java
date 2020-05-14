@@ -154,7 +154,7 @@ public class sudokuGA {
             if (noChange < 30)
                 myPop.nextGeneration(tournamentSize, randomCount, mutationCount, elitismCount);
             else {
-                myPop.nextGeneration(tournamentSize, populationSize / 3, mutationCount, populationSize / 5);
+                myPop.nextGeneration(tournamentSize, populationSize / 2, mutationCount, populationSize / 5);
                 noChange = 0;
             }
 
