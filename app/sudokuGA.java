@@ -158,7 +158,7 @@ public class sudokuGA {
                 noChange = 0;
             }
 
-            // prevent stagnation by introducing new chromosones
+            // prevent stagnation by introducing new Chromosomes
 
             if (previousBest == myPop.getBestFitnessScore())
                 noChange++;
@@ -444,13 +444,13 @@ public class sudokuGA {
     }
 
     private static class Population {
-        private List<Chromosone> population = new ArrayList<Chromosone>();
+        private List<Chromosome> population = new ArrayList<Chromosome>();
         int popSize;
         int bestFitnessScore = 999;
         int Generation = 0;
         char[][] fixedSudokuArray = new char[dimension][dimension];
 
-        private List<Chromosone> getPopulation() {
+        private List<Chromosome> getPopulation() {
             return population;
         }
 
@@ -463,7 +463,7 @@ public class sudokuGA {
             fixedSudokuArray = _fixedSudokuArray;
 
             for (int i = 0; i < popSize; i++) {
-                population.add(new Chromosone(fixedSudokuArray));
+                population.add(new Chromosome(fixedSudokuArray));
             }
         }
 
@@ -475,22 +475,19 @@ public class sudokuGA {
          * @param ElitismCount
          */
         private void nextGeneration(int tournamentSize, int RandomCount, int MutationCount, int ElitismCount) {
-            List<Chromosone> newPopulation = new ArrayList<Chromosone>();
+            List<Chromosome> newPopulation = new ArrayList<Chromosome>();
             Generation++;
 
-            for (int tournamentsCounter = 0; tournamentsCounter < popSize / tournamentSize; tournamentsCounter++) { // amount
-                                                                                                                    // of
-                                                                                                                    // tournaments
-                                                                                                                    // to
-                                                                                                                    // run
+            for (int tournamentsCounter = 0; tournamentsCounter < popSize / tournamentSize; tournamentsCounter++) {
+      
                 List<Integer> checked = new ArrayList<Integer>();
-                List<Chromosone> Tournament = new ArrayList<Chromosone>();
+                List<Chromosome> Tournament = new ArrayList<Chromosome>();
 
                 Random rand;
                 Integer addToTournament = 0;
 
                 for (int tournamentNo = 0; tournamentNo < tournamentSize; tournamentNo++) {
-                    Tournament = new ArrayList<Chromosone>();
+                    Tournament = new ArrayList<Chromosome>();
                     do {
                         rand = new Random();
                         addToTournament = rand.nextInt(popSize);
@@ -501,9 +498,9 @@ public class sudokuGA {
                                                                      // tournament
                 }
 
-                Collections.sort(Tournament); // put Chromosone with best fitness score in front
+                Collections.sort(Tournament); // put Chromosome with best fitness score in front
 
-                newPopulation.add(Tournament.get(0)); // add best Chromosone to new population
+                newPopulation.add(Tournament.get(0)); // add best Chromosome to new population
 
             }
 
@@ -513,11 +510,12 @@ public class sudokuGA {
             if (MutationCount > 0) {
                 newPopulation = Mutation(newPopulation, MutationCount);
                 newPopulation = smartMutation(newPopulation, MutationCount);
+                newPopulation = smartMutation(newPopulation, MutationCount);
             }
 
-            // replace worst chromosones with new random ones
+            // replace worst Chromosomes with new random ones
             if (RandomCount > 0)
-                newPopulation = FreshChromosones(newPopulation, RandomCount);
+                newPopulation = FreshChromosomes(newPopulation, RandomCount);
 
             // replace worst with elite
             Collections.sort(population);
@@ -531,13 +529,13 @@ public class sudokuGA {
             population = newPopulation;
         }
 
-        private List<Chromosone> smartMutation(List<Chromosone> inputPopulation, int MutationCount) {
-            List<Chromosone> mutationPopulation = new ArrayList<Chromosone>(inputPopulation);
+        private List<Chromosome> smartMutation(List<Chromosome> inputPopulation, int MutationCount) {
+            List<Chromosome> mutationPopulation = new ArrayList<Chromosome>(inputPopulation);
 
             for (int i = 0; i < MutationCount * 10; i++) {
                 Random rand = new Random();
                 int chosenOne = rand.nextInt(mutationPopulation.size());
-                Chromosone mutateMe = mutationPopulation.get(chosenOne);
+                Chromosome mutateMe = mutationPopulation.get(chosenOne);
 
                 for (int rowToMutate = 0; rowToMutate < dimension; rowToMutate++) {
                     List<Integer> hasDuplicate = new ArrayList<Integer>();
@@ -571,8 +569,8 @@ public class sudokuGA {
             return mutationPopulation;
         }
 
-        private List<Chromosone> Mutation(List<Chromosone> inputPopulation, int MutationCount) {
-            List<Chromosone> mutationPopulation = new ArrayList<Chromosone>(inputPopulation);
+        private List<Chromosome> Mutation(List<Chromosome> inputPopulation, int MutationCount) {
+            List<Chromosome> mutationPopulation = new ArrayList<Chromosome>(inputPopulation);
 
             for (int i = 0; i < MutationCount; i++) {
                 Random rand = new Random();
@@ -585,24 +583,24 @@ public class sudokuGA {
             return mutationPopulation;
         }
 
-        // replace worst performing Chromosones
-        private List<Chromosone> FreshChromosones(List<Chromosone> inputPopulation, int RandomCount) {
-            List<Chromosone> randomPopulation = new ArrayList<Chromosone>(inputPopulation);
+        // replace worst performing Chromosomes
+        private List<Chromosome> FreshChromosomes(List<Chromosome> inputPopulation, int RandomCount) {
+            List<Chromosome> randomPopulation = new ArrayList<Chromosome>(inputPopulation);
 
             Collections.sort(randomPopulation);
 
             for (int i = 0; i < RandomCount; i++) {
-                randomPopulation.set(randomPopulation.size() - i - 1, new Chromosone(fixedSudokuArray));
+                randomPopulation.set(randomPopulation.size() - i - 1, new Chromosome(fixedSudokuArray));
             }
             return randomPopulation;
         }
 
-        private List<Chromosone> Crossover(List<Chromosone> inputPopulation) {
+        private List<Chromosome> Crossover(List<Chromosome> inputPopulation) {
 
-            Chromosone parentA;
-            Chromosone parentB;
+            Chromosome parentA;
+            Chromosome parentB;
 
-            List<Chromosone> crossoverPopulation = new ArrayList<Chromosone>(inputPopulation);
+            List<Chromosome> crossoverPopulation = new ArrayList<Chromosome>(inputPopulation);
 
             while (crossoverPopulation.size() < popSize) {
                 Random rand;
@@ -610,7 +608,7 @@ public class sudokuGA {
                 parentA = inputPopulation.get(rand.nextInt(inputPopulation.size()));
                 parentB = inputPopulation.get(rand.nextInt(inputPopulation.size()));
 
-                Chromosone newChromo = new Chromosone(fixedSudokuArray);
+                Chromosome newChromo = new Chromosome(fixedSudokuArray);
 
                 for (int row = 0; row < dimension; row++) {
                     boolean chooseParent = new Random().nextBoolean();
@@ -645,8 +643,8 @@ public class sudokuGA {
             return ((double) total) / popSize;
         }
 
-        private Chromosone getBestFitnessChromo() {
-            Chromosone best = population.get(0);
+        private Chromosome getBestFitnessChromo() {
+            Chromosome best = population.get(0);
             for (int i = 0; i < popSize; i++) {
                 if (population.get(i).determineFitness() < best.determineFitness())
                     best = population.get(i);
@@ -657,7 +655,7 @@ public class sudokuGA {
 
     }
 
-    private static class Chromosone implements Comparable<Chromosone> {
+    private static class Chromosome implements Comparable<Chromosome> {
         private char[][] DNA;
 
         private char[][] getDNA() {
@@ -754,8 +752,8 @@ public class sudokuGA {
             return errors;
         }
 
-        private Chromosone(char[][] fixedSudokuArray) {
-            char generatedChromosone[][] = copySudokuArray(fixedSudokuArray);
+        private Chromosome(char[][] fixedSudokuArray) {
+            char generatedChromosome[][] = copySudokuArray(fixedSudokuArray);
             int placementCounter;
             boolean placed;
             for (int row = 0; row < dimension; row++) {
@@ -765,26 +763,26 @@ public class sudokuGA {
                     if (fixedSudokuArray[row][col] != '0')
                         continue; // skip the predetermined (fixed) cells
                     while (!placed) {
-                        if (!(new String(sudokuRow(generatedChromosone, row))
+                        if (!(new String(sudokuRow(generatedChromosome, row))
                                 .contains(String.valueOf(placementCounter)))) { // check if row contains
                                                                                 // placementCounter
-                            generatedChromosone[row][col] = (char) (placementCounter + '0'); // place it
+                            generatedChromosome[row][col] = (char) (placementCounter + '0'); // place it
                             placed = true;
                         } else {
                             placementCounter++; // increase placement as it already exists in row
                         }
                     }
                 }
-                DNA = generatedChromosone;
+                DNA = generatedChromosome;
                 shuffleRow(fixedSudokuArray, row);
-                generatedChromosone = DNA;
+                generatedChromosome = DNA;
             }
 
-            DNA = generatedChromosone;
+            DNA = generatedChromosome;
         }
 
         @Override
-        public int compareTo(Chromosone c) {
+        public int compareTo(Chromosome c) {
             return this.determineFitness().compareTo(c.determineFitness());
         }
     }

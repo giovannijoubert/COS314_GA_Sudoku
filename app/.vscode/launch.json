@@ -8,7 +8,7 @@
             "type": "java",
             "name": "Debug (Launch) - Current File",
             "request": "launch",
-            "args": ["inputparams.txt", "problems/s12a.txt"],
+            "args": ["inputparams.txt", "problems/s15a.txt"],
             "mainClass": "${file}"
         },
         {

@@ -3,7 +3,6 @@ tournamentSize 10
 mutationRate 0.7
 randomCount 10
 elitismCount 30
-maxIterations 40000
+maxIterations 10000
 verbose
 tofile
-useoptimizations
